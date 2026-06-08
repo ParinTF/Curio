@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+/* The resume always renders at a fixed A4 width (794px @ 96dpi = 210mm) so the
+   on-screen preview and the printed PDF share the exact same layout. On screen
+   it's visually scaled down to fit its column via `--preview-scale`; in print
+   the scale is removed and it maps 1:1 onto the A4 page. */
+.resume-page {
+  width: 100%;
+  /* Keep template background fills (e.g. the Sidebar accent column) when printing. */
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.resume-scaler {
+  width: var(--page-width, 794px);
+  transform: scale(var(--preview-scale, 1));
+  transform-origin: top left;
+}
+
+/* Reserves the *scaled* footprint so the scroll container sizes correctly.
+   Width/height come from CSS (not inline) so print can reset them. */
+.resume-frame {
+  width: calc(var(--page-width, 794px) * var(--preview-scale, 1));
+  height: calc(var(--page-height, 0px) * var(--preview-scale, 1));
+}
+
+/* PDF export: hide UI chrome, render the page at 1:1 onto A4, and let it
+   paginate across multiple pages instead of being clipped. */
+@media print {
+  @page {
+    size: A4;
+    margin: 0;
+  }
+
+  body {
+    background: #fff;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  /* The preview lives in a fixed-height scroll container on screen — release
+     those constraints so the full resume prints. */
+  .resume-scroll {
+    position: static !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  /* Drop the screen-only scaling and footprint so the page prints at A4 1:1. */
+  .resume-scaler {
+    transform: none !important;
+  }
+
+  .resume-frame {
+    width: auto !important;
+    height: auto !important;
+  }
+
+  .resume-print-area {
+    max-width: none !important;
+    margin: 0 !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+  }
+}

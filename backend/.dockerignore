@@ -1,0 +1,14 @@
+# Secrets — never bake into the image
+.env
+.env.*
+
+# Local build artifacts
+*.exe
+server
+backend
+
+# Misc
+Dockerfile
+.dockerignore
+fly.toml
+*.md

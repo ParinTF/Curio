@@ -1,0 +1,10 @@
+import { RequireAuth } from "@/components/require-auth";
+import { DashboardClient } from "@/components/dashboard-client";
+
+export default function DashboardPage() {
+  return (
+    <RequireAuth>
+      <DashboardClient />
+    </RequireAuth>
+  );
+}

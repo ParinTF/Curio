@@ -28,6 +28,15 @@ const ACCENT_PRESETS = [
   "#18181b", // near-black
 ];
 
+const FONT_COLOR_PRESETS = [
+  "#18181b", // zinc-900 (default)
+  "#374151", // gray-700
+  "#1e3a5f", // dark navy
+  "#3f3f46", // zinc-700
+  "#7f1d1d", // dark red
+  "#1e40af", // dark blue
+];
+
 const FONTS: { id: FontFamily; label: string }[] = [
   { id: "sans", label: "Sans" },
   { id: "serif", label: "Serif" },
@@ -332,6 +341,32 @@ export function EditorClient({ id }: { id: string }) {
                     onChange={(e) => setStyle({ accent_color: e.target.value })}
                     className="h-7 w-9 cursor-pointer rounded border border-zinc-300 bg-white"
                     aria-label="Custom accent color"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <p className="mb-1.5 text-xs font-medium text-zinc-600">Text color</p>
+                <div className="flex items-center gap-2">
+                  {FONT_COLOR_PRESETS.map((c) => (
+                    <button
+                      key={c}
+                      onClick={() => setStyle({ font_color: c })}
+                      aria-label={`Font color ${c}`}
+                      className={`h-7 w-7 rounded-full border-2 transition-transform hover:scale-110 ${
+                        content.style.font_color === c
+                          ? "border-zinc-900"
+                          : "border-transparent"
+                      }`}
+                      style={{ backgroundColor: c }}
+                    />
+                  ))}
+                  <input
+                    type="color"
+                    value={content.style.font_color}
+                    onChange={(e) => setStyle({ font_color: e.target.value })}
+                    className="h-7 w-9 cursor-pointer rounded border border-zinc-300 bg-white"
+                    aria-label="Custom text color"
                   />
                 </div>
               </div>

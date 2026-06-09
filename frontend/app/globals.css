@@ -41,6 +41,17 @@ body {
     margin: 0;
   }
 
+  /* Suppress browser-generated headers & footers (URL, page number, date).
+     Some browsers still show them unless we explicitly zero out margin-boxes. */
+  @page {
+    @top-left { content: none; }
+    @top-center { content: none; }
+    @top-right { content: none; }
+    @bottom-left { content: none; }
+    @bottom-center { content: none; }
+    @bottom-right { content: none; }
+  }
+
   body {
     background: #fff;
   }

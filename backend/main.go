@@ -55,6 +55,7 @@ type skillInfo struct {
 
 type styleInfo struct {
 	AccentColor string `json:"accent_color"`
+	FontColor   string `json:"font_color"`
 	FontFamily  string `json:"font_family"`
 }
 

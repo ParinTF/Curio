@@ -37,6 +37,7 @@ export type FontFamily = "sans" | "serif" | "mono";
 
 export interface StyleInfo {
   accent_color: string;
+  font_color: string;
   font_family: FontFamily;
 }
 
@@ -79,10 +80,11 @@ export interface CreateResumeRequest {
 }
 
 export const DEFAULT_ACCENT = "#2563eb";
+export const DEFAULT_FONT_COLOR = "#18181b";
 export const DEFAULT_FONT: FontFamily = "sans";
 
 export function defaultStyle(): StyleInfo {
-  return { accent_color: DEFAULT_ACCENT, font_family: DEFAULT_FONT };
+  return { accent_color: DEFAULT_ACCENT, font_color: DEFAULT_FONT_COLOR, font_family: DEFAULT_FONT };
 }
 
 /** A blank content envelope, useful when creating a new resume. */

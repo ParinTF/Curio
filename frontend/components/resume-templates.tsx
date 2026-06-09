@@ -6,7 +6,7 @@ import type {
   SkillInfo,
   WorkInfo,
 } from "@/lib/types";
-import { DEFAULT_ACCENT } from "@/lib/types";
+import { DEFAULT_ACCENT, DEFAULT_FONT_COLOR } from "@/lib/types";
 
 const FONT_STACK: Record<FontFamily, string> = {
   sans: "var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif",
@@ -32,12 +32,13 @@ export function ResumePreview({
   content: ResumeContent;
 }) {
   const accent = content.style?.accent_color || DEFAULT_ACCENT;
+  const fontColor = content.style?.font_color || DEFAULT_FONT_COLOR;
   const fontFamily = FONT_STACK[content.style?.font_family ?? "sans"];
 
   return (
     <div
-      className="resume-page bg-white text-zinc-800"
-      style={{ fontFamily }}
+      className="resume-page bg-white"
+      style={{ fontFamily, color: fontColor }}
     >
       {template === "classic" ? (
         <Classic content={content} accent={accent} />
@@ -76,20 +77,20 @@ function ItemRow({
   return (
     <div className="mb-3 last:mb-0">
       <div className="flex items-baseline justify-between gap-4">
-        <p className="font-semibold text-zinc-900">
-          {heading || <span className="text-zinc-400">Untitled</span>}
+        <p className="font-semibold">
+          {heading || <span className="opacity-40">Untitled</span>}
           {subheading ? (
-            <span className="font-normal text-zinc-600"> · {subheading}</span>
+            <span className="font-normal opacity-70"> · {subheading}</span>
           ) : null}
         </p>
         {date ? (
-          <p className="shrink-0 text-xs text-zinc-500" style={{ color: accent }}>
+          <p className="shrink-0 text-xs" style={{ color: accent }}>
             {date}
           </p>
         ) : null}
       </div>
       {detail ? (
-        <p className="mt-0.5 whitespace-pre-line text-sm leading-relaxed text-zinc-600">
+        <p className="mt-0.5 whitespace-pre-line text-sm leading-relaxed opacity-75">
           {detail}
         </p>
       ) : null}
@@ -131,7 +132,7 @@ function ClassicSection({
   return (
     <section className="mb-5 last:mb-0">
       <div className="mb-3 flex items-center gap-3">
-        <h2 className="text-sm font-bold uppercase tracking-widest text-zinc-900">
+        <h2 className="text-sm font-bold uppercase tracking-widest">
           {title}
         </h2>
         <span className="h-px flex-1" style={{ backgroundColor: accent }} />
@@ -147,7 +148,7 @@ function Skills({ skills }: { skills: SkillInfo[] }) {
       {skills.map((s, i) => (
         <span
           key={i}
-          className="rounded bg-zinc-100 px-2 py-0.5 text-xs text-zinc-700"
+          className="rounded bg-zinc-100 px-2 py-0.5 text-xs"
         >
           {s.skill_name || "—"}
         </span>
@@ -167,10 +168,10 @@ function Modern({ content, accent }: TemplateProps) {
     <div className="px-10 py-9">
       <header className="mb-6">
         <h1 className="text-3xl font-bold tracking-tight" style={{ color: accent }}>
-          {personInfo.name || <span className="text-zinc-300">Your Name</span>}
+          {personInfo.name || <span className="opacity-30">Your Name</span>}
         </h1>
         {personInfo.contact ? (
-          <p className="mt-1 text-sm text-zinc-500">{personInfo.contact}</p>
+          <p className="mt-1 text-sm opacity-60">{personInfo.contact}</p>
         ) : null}
       </header>
 
@@ -236,11 +237,11 @@ function Classic({ content, accent }: TemplateProps) {
   return (
     <div className="px-12 py-10">
       <header className="mb-7 text-center">
-        <h1 className="text-3xl font-bold tracking-wide text-zinc-900">
-          {personInfo.name || <span className="text-zinc-300">Your Name</span>}
+        <h1 className="text-3xl font-bold tracking-wide">
+          {personInfo.name || <span className="opacity-30">Your Name</span>}
         </h1>
         {personInfo.contact ? (
-          <p className="mt-1.5 text-sm text-zinc-500">{personInfo.contact}</p>
+          <p className="mt-1.5 text-sm opacity-60">{personInfo.contact}</p>
         ) : null}
         <div
           className="mx-auto mt-4 h-0.5 w-16"
@@ -313,7 +314,7 @@ function MinimalSection({
 }) {
   return (
     <section className="mb-6 last:mb-0">
-      <h2 className="mb-3 border-b border-zinc-200 pb-1 text-[11px] font-medium uppercase tracking-[0.2em] text-zinc-400">
+      <h2 className="mb-3 border-b border-zinc-200 pb-1 text-[11px] font-medium uppercase tracking-[0.2em] opacity-50">
         {title}
       </h2>
       {children}
@@ -328,10 +329,10 @@ function Minimal({ content, accent }: TemplateProps) {
     <div className="px-12 py-12">
       <header className="mb-8">
         <h1 className="text-2xl font-semibold tracking-tight" style={{ color: accent }}>
-          {personInfo.name || <span className="text-zinc-300">Your Name</span>}
+          {personInfo.name || <span className="opacity-30">Your Name</span>}
         </h1>
         {personInfo.contact ? (
-          <p className="mt-1 text-sm text-zinc-500">{personInfo.contact}</p>
+          <p className="mt-1 text-sm opacity-60">{personInfo.contact}</p>
         ) : null}
       </header>
 
@@ -406,7 +407,7 @@ function Sidebar({ content, accent }: TemplateProps) {
           <img
             src={personInfo.photo}
             alt={personInfo.name || "Profile photo"}
-            className="mb-5 h-28 w-28 rounded-full object-cover ring-2 ring-white/40"
+            className="mx-auto mb-5 h-28 w-28 rounded-full object-cover ring-2 ring-white/40"
           />
         ) : null}
 

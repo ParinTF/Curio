@@ -418,7 +418,7 @@ function SchoolAutocomplete({
       setLoading(true);
       try {
         const res = await fetch(
-          `https://universities.hipolabs.com/search?name=${encodeURIComponent(q)}`
+          `/api/universities?name=${encodeURIComponent(q)}`
         );
         const data: UniversityResult[] = await res.json();
         const top = data.slice(0, 8);

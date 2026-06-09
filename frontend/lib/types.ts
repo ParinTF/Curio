@@ -5,9 +5,22 @@
 
 export interface PersonInfo {
   name: string;
-  contact: string;
+  email: string;
+  phone: string;
+  location: string;
+  github: string;
   /** Data URL or image URL. Rendered by photo-supporting templates. */
   photo: string;
+}
+
+/**
+ * Build a display string from the non-empty contact fields, separated by " · ".
+ * Used by resume templates to render a compact one-line contact row.
+ */
+export function formatContact(p: PersonInfo): string {
+  return [p.email, p.phone, p.location, p.github]
+    .filter(Boolean)
+    .join(" · ");
 }
 
 export interface EducationInfo {
@@ -44,6 +57,7 @@ export interface StyleInfo {
 /** The JSONB blob stored in the `resumes.content` column. */
 export interface ResumeContent {
   personInfo: PersonInfo;
+  profile: string;
   education: EducationInfo[];
   experience: WorkInfo[];
   project: ProjectInfo[];
@@ -90,7 +104,8 @@ export function defaultStyle(): StyleInfo {
 /** A blank content envelope, useful when creating a new resume. */
 export function emptyContent(): ResumeContent {
   return {
-    personInfo: { name: "", contact: "", photo: "" },
+    personInfo: { name: "", email: "", phone: "", location: "", github: "", photo: "" },
+    profile: "",
     education: [],
     experience: [],
     project: [],

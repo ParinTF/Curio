@@ -14,6 +14,7 @@ import { ResumePaper } from "@/components/resume-paper";
 import {
   EducationEditor,
   ExperienceEditor,
+  ProfileEditor,
   ProjectEditor,
   SkillsEditor,
   TextInput,
@@ -158,7 +159,7 @@ export function EditorClient({ id }: { id: string }) {
   // Helpers to patch nested state immutably.
   const patchContent = (patch: Partial<ResumeContent>) =>
     setContent((c) => ({ ...c, ...patch }));
-  const setPerson = (field: "name" | "contact" | "photo", v: string) =>
+  const setPerson = (field: keyof ResumeContent["personInfo"], v: string) =>
     setContent((c) => ({ ...c, personInfo: { ...c.personInfo, [field]: v } }));
   const setStyle = (patch: Partial<ResumeContent["style"]>) =>
     setContent((c) => ({ ...c, style: { ...c.style, ...patch } }));
@@ -244,12 +245,34 @@ export function EditorClient({ id }: { id: string }) {
                 onChange={(v) => setPerson("name", v)}
                 placeholder="Jane Doe"
               />
-              <TextInput
-                label="Contact"
-                value={content.personInfo.contact}
-                onChange={(v) => setPerson("contact", v)}
-                placeholder="jane@email.com · +66 · Bangkok"
-              />
+              <div className="grid grid-cols-2 gap-3">
+                <TextInput
+                  label="Email"
+                  value={content.personInfo.email}
+                  onChange={(v) => setPerson("email", v)}
+                  placeholder="jane@email.com"
+                />
+                <TextInput
+                  label="Phone"
+                  value={content.personInfo.phone}
+                  onChange={(v) => setPerson("phone", v)}
+                  placeholder="+66 812 345 678"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <TextInput
+                  label="Location"
+                  value={content.personInfo.location}
+                  onChange={(v) => setPerson("location", v)}
+                  placeholder="Bangkok, Thailand"
+                />
+                <TextInput
+                  label="GitHub"
+                  value={content.personInfo.github}
+                  onChange={(v) => setPerson("github", v)}
+                  placeholder="github.com/username"
+                />
+              </div>
 
               <div>
                 <p className="mb-1.5 text-xs font-medium text-zinc-600">
@@ -392,6 +415,10 @@ export function EditorClient({ id }: { id: string }) {
             </div>
           </section>
 
+          <ProfileEditor
+            value={content.profile}
+            onChange={(v) => patchContent({ profile: v })}
+          />
           <ExperienceEditor
             value={content.experience}
             onChange={(v) => patchContent({ experience: v })}

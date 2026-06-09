@@ -162,7 +162,7 @@ function Skills({ skills }: { skills: SkillInfo[] }) {
 /* ----------------------------------------------------------------------- */
 
 function Modern({ content, accent }: TemplateProps) {
-  const { personInfo, experience, education, project, skill } = content;
+  const { personInfo, profile, experience, education, project, skill } = content;
 
   return (
     <div className="px-10 py-9">
@@ -174,6 +174,12 @@ function Modern({ content, accent }: TemplateProps) {
           <p className="mt-1 text-sm opacity-60">{personInfo.contact}</p>
         ) : null}
       </header>
+
+      {profile && (
+        <ModernSection title="Profile" accent={accent}>
+          <p className="text-sm leading-relaxed opacity-75 whitespace-pre-line">{profile}</p>
+        </ModernSection>
+      )}
 
       {hasItems(experience) && (
         <ModernSection title="Experience" accent={accent}>
@@ -232,7 +238,7 @@ function Modern({ content, accent }: TemplateProps) {
 /* ----------------------------------------------------------------------- */
 
 function Classic({ content, accent }: TemplateProps) {
-  const { personInfo, experience, education, project, skill } = content;
+  const { personInfo, profile, experience, education, project, skill } = content;
 
   return (
     <div className="px-12 py-10">
@@ -248,6 +254,12 @@ function Classic({ content, accent }: TemplateProps) {
           style={{ backgroundColor: accent }}
         />
       </header>
+
+      {profile && (
+        <ClassicSection title="Profile" accent={accent}>
+          <p className="text-sm leading-relaxed opacity-75 whitespace-pre-line">{profile}</p>
+        </ClassicSection>
+      )}
 
       {hasItems(experience) && (
         <ClassicSection title="Experience" accent={accent}>
@@ -323,7 +335,7 @@ function MinimalSection({
 }
 
 function Minimal({ content, accent }: TemplateProps) {
-  const { personInfo, experience, education, project, skill } = content;
+  const { personInfo, profile, experience, education, project, skill } = content;
 
   return (
     <div className="px-12 py-12">
@@ -335,6 +347,12 @@ function Minimal({ content, accent }: TemplateProps) {
           <p className="mt-1 text-sm opacity-60">{personInfo.contact}</p>
         ) : null}
       </header>
+
+      {profile && (
+        <MinimalSection title="Profile">
+          <p className="text-sm leading-relaxed opacity-75 whitespace-pre-line">{profile}</p>
+        </MinimalSection>
+      )}
 
       {hasItems(experience) && (
         <MinimalSection title="Experience">
@@ -393,7 +411,7 @@ function Minimal({ content, accent }: TemplateProps) {
 /* ----------------------------------------------------------------------- */
 
 function Sidebar({ content, accent }: TemplateProps) {
-  const { personInfo, experience, education, project, skill } = content;
+  const { personInfo, profile, experience, education, project, skill } = content;
 
   return (
     <div className="flex min-h-[1000px] items-stretch">
@@ -419,6 +437,15 @@ function Sidebar({ content, accent }: TemplateProps) {
             {personInfo.contact}
           </p>
         ) : null}
+
+        {profile && (
+          <div className="mt-5">
+            <h2 className="mb-2 text-xs font-semibold uppercase tracking-wider text-white/70">
+              Profile
+            </h2>
+            <p className="text-sm leading-relaxed text-white/90 whitespace-pre-line">{profile}</p>
+          </div>
+        )}
 
         {hasItems(skill) && (
           <div className="mt-7">

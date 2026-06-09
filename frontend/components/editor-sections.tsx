@@ -63,6 +63,57 @@ export function TextArea({
   );
 }
 
+/**
+ * GPA input — allows only numbers with up to 2 decimal places, capped at 4.00.
+ * Invalid characters are silently rejected; an error hint appears if the value
+ * exceeds 4.00.
+ */
+function GpaInput({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  const handleChange = (raw: string) => {
+    // Allow empty (clearing the field)
+    if (raw === "") {
+      onChange("");
+      return;
+    }
+
+    // Only allow digits and a single decimal point, up to 2 decimal places
+    // Valid patterns: "4", "3.", "3.8", "3.80"
+    if (!/^\d{0,2}\.?\d{0,2}$/.test(raw)) return;
+
+    // Block values above 4.00
+    const num = parseFloat(raw);
+    if (!isNaN(num) && num > 4) return;
+
+    onChange(raw);
+  };
+
+  const num = parseFloat(value);
+  const isOver = !isNaN(num) && num > 4;
+
+  return (
+    <label className="flex flex-col gap-1 text-xs font-medium text-zinc-600">
+      GPA <span className="font-normal text-zinc-400">(max 4.00)</span>
+      <input
+        type="text"
+        inputMode="decimal"
+        value={value}
+        placeholder="3.80"
+        onChange={(e) => handleChange(e.target.value)}
+        className={`${inputCls} ${isOver ? "border-red-400 focus:border-red-500 focus:ring-red-500" : ""}`}
+      />
+      {isOver && (
+        <span className="text-[11px] text-red-500">GPA ต้องไม่เกิน 4.00</span>
+      )}
+    </label>
+  );
+}
+
 /* ----------------------------------------------------------------------- */
 /* Month/year range picker                                                 */
 /* ----------------------------------------------------------------------- */
@@ -229,6 +280,26 @@ function removeAt<T>(list: T[], index: number): T[] {
 /* Section editors                                                         */
 /* ----------------------------------------------------------------------- */
 
+export function ProfileEditor({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  return (
+    <section className="rounded-lg border border-zinc-200 bg-white p-5">
+      <h2 className="mb-4 text-sm font-semibold text-zinc-900">Profile</h2>
+      <TextArea
+        label="About you"
+        value={value}
+        onChange={onChange}
+        placeholder="A short intro about yourself, your background, and what you're looking for…"
+      />
+    </section>
+  );
+}
+
 export function ExperienceEditor({
   value,
   onChange,
@@ -349,11 +420,9 @@ export function EducationEditor({
             value={item.date}
             onChange={(v) => onChange(updateAt(value, i, { date: v }))}
           />
-          <TextInput
-            label="GPA"
+          <GpaInput
             value={item.gpa}
             onChange={(v) => onChange(updateAt(value, i, { gpa: v }))}
-            placeholder="3.80 / 4.00"
           />
         </ItemCard>
       ))}

@@ -6,7 +6,7 @@ import type {
   SkillInfo,
   WorkInfo,
 } from "@/lib/types";
-import { DEFAULT_ACCENT, DEFAULT_FONT_COLOR } from "@/lib/types";
+import { DEFAULT_ACCENT, DEFAULT_FONT_COLOR, formatContact } from "@/lib/types";
 
 const FONT_STACK: Record<FontFamily, string> = {
   sans: "var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif",
@@ -170,8 +170,8 @@ function Modern({ content, accent }: TemplateProps) {
         <h1 className="text-3xl font-bold tracking-tight" style={{ color: accent }}>
           {personInfo.name || <span className="opacity-30">Your Name</span>}
         </h1>
-        {personInfo.contact ? (
-          <p className="mt-1 text-sm opacity-60">{personInfo.contact}</p>
+        {formatContact(personInfo) ? (
+          <p className="mt-1 text-sm opacity-60">{formatContact(personInfo)}</p>
         ) : null}
       </header>
 
@@ -246,8 +246,8 @@ function Classic({ content, accent }: TemplateProps) {
         <h1 className="text-3xl font-bold tracking-wide">
           {personInfo.name || <span className="opacity-30">Your Name</span>}
         </h1>
-        {personInfo.contact ? (
-          <p className="mt-1.5 text-sm opacity-60">{personInfo.contact}</p>
+        {formatContact(personInfo) ? (
+          <p className="mt-1.5 text-sm opacity-60">{formatContact(personInfo)}</p>
         ) : null}
         <div
           className="mx-auto mt-4 h-0.5 w-16"
@@ -343,8 +343,8 @@ function Minimal({ content, accent }: TemplateProps) {
         <h1 className="text-2xl font-semibold tracking-tight" style={{ color: accent }}>
           {personInfo.name || <span className="opacity-30">Your Name</span>}
         </h1>
-        {personInfo.contact ? (
-          <p className="mt-1 text-sm opacity-60">{personInfo.contact}</p>
+        {formatContact(personInfo) ? (
+          <p className="mt-1 text-sm opacity-60">{formatContact(personInfo)}</p>
         ) : null}
       </header>
 
@@ -432,9 +432,9 @@ function Sidebar({ content, accent }: TemplateProps) {
         <h1 className="text-2xl font-bold leading-tight">
           {personInfo.name || <span className="text-white/50">Your Name</span>}
         </h1>
-        {personInfo.contact ? (
+        {formatContact(personInfo) ? (
           <p className="mt-2 text-sm leading-relaxed text-white/80">
-            {personInfo.contact}
+            {formatContact(personInfo)}
           </p>
         ) : null}
 

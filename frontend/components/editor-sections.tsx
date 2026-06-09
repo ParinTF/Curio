@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef, useState } from "react";
 import type {
   EducationInfo,
   ProjectInfo,
@@ -393,6 +394,88 @@ export function ProjectEditor({
   );
 }
 
+interface UniversityResult {
+  name: string;
+  country: string;
+}
+
+function SchoolAutocomplete({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  const [results, setResults] = useState<UniversityResult[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const search = (q: string) => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    if (q.length < 2) { setResults([]); setOpen(false); return; }
+    timerRef.current = setTimeout(async () => {
+      setLoading(true);
+      try {
+        const res = await fetch(
+          `https://universities.hipolabs.com/search?name=${encodeURIComponent(q)}`
+        );
+        const data: UniversityResult[] = await res.json();
+        const top = data.slice(0, 8);
+        setResults(top);
+        setOpen(top.length > 0);
+      } catch {
+        setResults([]);
+      } finally {
+        setLoading(false);
+      }
+    }, 350);
+  };
+
+  const handleChange = (v: string) => { onChange(v); search(v); };
+
+  const handleSelect = (name: string) => {
+    onChange(name);
+    setResults([]);
+    setOpen(false);
+  };
+
+  return (
+    <div className="relative flex flex-col gap-1 text-xs font-medium text-zinc-600">
+      School
+      <div className="relative">
+        <input
+          value={value}
+          onChange={(e) => handleChange(e.target.value)}
+          onBlur={() => setTimeout(() => setOpen(false), 150)}
+          onFocus={() => results.length > 0 && setOpen(true)}
+          placeholder="University of …"
+          className={inputCls}
+        />
+        {loading && (
+          <span className="absolute right-2.5 top-1/2 -translate-y-1/2">
+            <span className="block h-3.5 w-3.5 animate-spin rounded-full border-2 border-zinc-300 border-t-zinc-700" />
+          </span>
+        )}
+      </div>
+      {open && (
+        <ul className="absolute top-full z-20 mt-1 max-h-52 w-full overflow-auto rounded-md border border-zinc-200 bg-white shadow-lg">
+          {results.map((u, i) => (
+            <li
+              key={i}
+              onMouseDown={() => handleSelect(u.name)}
+              className="flex cursor-pointer flex-col px-3 py-2 hover:bg-zinc-50"
+            >
+              <span className="text-sm text-zinc-900">{u.name}</span>
+              <span className="text-[11px] text-zinc-400">{u.country}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 export function EducationEditor({
   value,
   onChange,
@@ -409,11 +492,9 @@ export function EducationEditor({
       {value.length === 0 && <EmptyHint text="No education added yet." />}
       {value.map((item, i) => (
         <ItemCard key={i} index={i} onRemove={() => onChange(removeAt(value, i))}>
-          <TextInput
-            label="School"
+          <SchoolAutocomplete
             value={item.school_name}
             onChange={(v) => onChange(updateAt(value, i, { school_name: v }))}
-            placeholder="University of …"
           />
           <MonthRange
             label="Date"

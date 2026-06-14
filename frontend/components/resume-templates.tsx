@@ -209,7 +209,7 @@ function Modern({ content, accent }: TemplateProps) {
             <ItemRow
               key={i}
               heading={ed.school_name}
-              subheading={ed.gpa ? `GPA ${ed.gpa}` : undefined}
+              subheading={[ed.field_of_study, ed.gpa ? `GPA ${ed.gpa}` : ""].filter(Boolean).join(" · ") || undefined}
               date={ed.date}
               accent={accent}
             />
@@ -283,7 +283,7 @@ function Classic({ content, accent }: TemplateProps) {
             <ItemRow
               key={i}
               heading={ed.school_name}
-              subheading={ed.gpa ? `GPA ${ed.gpa}` : undefined}
+              subheading={[ed.field_of_study, ed.gpa ? `GPA ${ed.gpa}` : ""].filter(Boolean).join(" · ") || undefined}
               date={ed.date}
               accent={accent}
             />
@@ -370,7 +370,7 @@ function Minimal({ content, accent }: TemplateProps) {
             <ItemRow
               key={i}
               heading={ed.school_name}
-              subheading={ed.gpa ? `GPA ${ed.gpa}` : undefined}
+              subheading={[ed.field_of_study, ed.gpa ? `GPA ${ed.gpa}` : ""].filter(Boolean).join(" · ") || undefined}
               date={ed.date}
               accent={accent}
             />
@@ -470,7 +470,7 @@ function Sidebar({ content, accent }: TemplateProps) {
               <ItemRow
                 key={i}
                 heading={ed.school_name}
-                subheading={ed.gpa ? `GPA ${ed.gpa}` : undefined}
+                subheading={[ed.field_of_study, ed.gpa ? `GPA ${ed.gpa}` : ""].filter(Boolean).join(" · ") || undefined}
                 date={ed.date}
                 accent={accent}
               />

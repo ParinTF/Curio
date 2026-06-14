@@ -62,10 +62,11 @@ export function EditorClient({ id }: { id: string }) {
           ...resume.content,
           style: { ...defaultStyle(), ...resume.content?.style },
         };
-        // Older education items predate the `gpa` field — default it so the
-        // controlled inputs don't flip between controlled/uncontrolled.
+        // Older education items may predate the `gpa` / `field_of_study`
+        // fields — default them so controlled inputs stay controlled.
         merged.education = (merged.education ?? []).map((e) => ({
           ...e,
+          field_of_study: e.field_of_study ?? "",
           gpa: e.gpa ?? "",
         }));
         setTitle(resume.title);

@@ -333,7 +333,7 @@ export function EducationEditor({
     <SectionCard
       title="Education"
       addLabel="Add school"
-      onAdd={() => onChange([...value, { school_name: "", date: "", gpa: "" }])}
+      onAdd={() => onChange([...value, { school_name: "", field_of_study: "", date: "", gpa: "" }])}
     >
       {value.length === 0 && <EmptyHint text="No education added yet." />}
       {value.map((item, i) => (
@@ -343,6 +343,12 @@ export function EducationEditor({
             value={item.school_name}
             onChange={(v) => onChange(updateAt(value, i, { school_name: v }))}
             placeholder="University of …"
+          />
+          <TextInput
+            label="Field of Study"
+            value={item.field_of_study}
+            onChange={(v) => onChange(updateAt(value, i, { field_of_study: v }))}
+            placeholder="Computer Science"
           />
           <MonthRange
             label="Date"

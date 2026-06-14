@@ -12,6 +12,7 @@ export interface PersonInfo {
 
 export interface EducationInfo {
   school_name: string;
+  field_of_study: string;
   date: string;
   gpa: string;
 }

@@ -31,9 +31,10 @@ type personInfo struct {
 }
 
 type educationInfo struct {
-	SchoolName string `json:"school_name"`
-	Date       string `json:"date"`
-	Gpa        string `json:"gpa"`
+	SchoolName   string `json:"school_name"`
+	FieldOfStudy string `json:"field_of_study"`
+	Date         string `json:"date"`
+	Gpa          string `json:"gpa"`
 }
 
 type workInfo struct {

@@ -33,6 +33,7 @@ export function ResumeThumbnail({ id }: { id: string }) {
         };
         content.education = (content.education ?? []).map((e) => ({
           ...e,
+          field_of_study: e.field_of_study ?? "",
           gpa: e.gpa ?? "",
         }));
         setData({ template: r.template, content });

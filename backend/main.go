@@ -66,6 +66,7 @@ type styleInfo struct {
 
 type Content struct {
 	PersonInfo personInfo      `json:"personInfo"`
+	Profile    string          `json:"profile"`
 	Education  []educationInfo `json:"education"`
 	Experience []workInfo      `json:"experience"`
 	Project    []projectInfo   `json:"project"`

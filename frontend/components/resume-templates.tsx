@@ -165,16 +165,36 @@ function Skills({ skills }: { skills: SkillInfo[] }) {
     );
   }
 
+  // Group skills by category name
+  const groups: { category: string; skills: string[] }[] = [];
+  skills.forEach(s => {
+    const skillName = s.skill_name?.trim();
+    if (!skillName) return;
+
+    const category = s.category?.trim() || "";
+    const existing = groups.find(g => g.category.toLowerCase() === category.toLowerCase());
+
+    if (existing) {
+      existing.skills.push(skillName);
+    } else {
+      groups.push({ category: s.category?.trim() || "", skills: [skillName] });
+    }
+  });
+
   return (
     <div className="flex flex-col gap-1.5">
-      {skills.map((s, i) => {
-        if (!s.skill_name?.trim()) return null;
+      {groups.map((g, i) => {
+        const joinedSkills = g.skills
+          .flatMap(s => s.split(",").map(part => part.trim()))
+          .filter(Boolean)
+          .join(", ");
+
         return (
           <div key={i} className="text-sm">
-            {s.category?.trim() ? (
-              <span className="font-semibold">{s.category.trim()}: </span>
+            {g.category ? (
+              <span className="font-semibold">{g.category}: </span>
             ) : null}
-            <span className="opacity-80">{s.skill_name}</span>
+            <span className="opacity-80">{joinedSkills}</span>
           </div>
         );
       })}
@@ -525,19 +545,40 @@ function Sidebar({ content, accent }: TemplateProps) {
               Skills
             </h2>
             <ul className="flex flex-col gap-2.5 text-sm text-white/90">
-              {skill.map((s, i) => {
-                if (!s.skill_name?.trim()) return null;
-                return (
-                  <li key={i} className="leading-tight">
-                    {s.category?.trim() ? (
-                      <span className="block text-[10px] font-bold uppercase tracking-wider text-white/60 mb-0.5">
-                        {s.category.trim()}
-                      </span>
-                    ) : null}
-                    <span className="opacity-90">{s.skill_name}</span>
-                  </li>
-                );
-              })}
+              {(() => {
+                const groups: { category: string; skills: string[] }[] = [];
+                skill.forEach(s => {
+                  const skillName = s.skill_name?.trim();
+                  if (!skillName) return;
+
+                  const category = s.category?.trim() || "";
+                  const existing = groups.find(g => g.category.toLowerCase() === category.toLowerCase());
+
+                  if (existing) {
+                    existing.skills.push(skillName);
+                  } else {
+                    groups.push({ category: s.category?.trim() || "", skills: [skillName] });
+                  }
+                });
+
+                return groups.map((g, i) => {
+                  const joinedSkills = g.skills
+                    .flatMap(s => s.split(",").map(part => part.trim()))
+                    .filter(Boolean)
+                    .join(", ");
+
+                  return (
+                    <li key={i} className="leading-tight">
+                      {g.category ? (
+                        <span className="block text-[10px] font-bold uppercase tracking-wider text-white/60 mb-0.5">
+                          {g.category}
+                        </span>
+                      ) : null}
+                      <span className="opacity-90">{joinedSkills}</span>
+                    </li>
+                  );
+                });
+              })()}
             </ul>
           </div>
         )}

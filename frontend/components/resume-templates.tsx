@@ -67,19 +67,21 @@ function ItemRow({
   date,
   detail,
   accent,
+  subheadingBelow,
 }: {
   heading: string;
   subheading?: string;
   date?: string;
   detail?: string;
   accent: string;
+  subheadingBelow?: boolean;
 }) {
   return (
     <div className="mb-3 last:mb-0">
       <div className="flex items-baseline justify-between gap-4">
         <p className="font-semibold">
           {heading || <span className="opacity-40">Untitled</span>}
-          {subheading ? (
+          {!subheadingBelow && subheading ? (
             <span className="font-normal opacity-70"> · {subheading}</span>
           ) : null}
         </p>
@@ -89,6 +91,9 @@ function ItemRow({
           </p>
         ) : null}
       </div>
+      {subheadingBelow && subheading ? (
+        <p className="text-sm font-medium opacity-80 mt-0.5">{subheading}</p>
+      ) : null}
       {detail ? (
         <p className="mt-0.5 whitespace-pre-line text-sm leading-relaxed opacity-75">
           {detail}
@@ -219,6 +224,7 @@ function Modern({ content, accent }: TemplateProps) {
               subheading={[ed.field_of_study, ed.gpa ? `GPA ${ed.gpa}` : ""].filter(Boolean).join(" · ") || undefined}
               date={ed.date}
               accent={accent}
+              subheadingBelow={true}
             />
           ))}
         </ModernSection>
@@ -299,6 +305,7 @@ function Classic({ content, accent }: TemplateProps) {
               subheading={[ed.field_of_study, ed.gpa ? `GPA ${ed.gpa}` : ""].filter(Boolean).join(" · ") || undefined}
               date={ed.date}
               accent={accent}
+              subheadingBelow={true}
             />
           ))}
         </ClassicSection>
@@ -392,6 +399,7 @@ function Minimal({ content, accent }: TemplateProps) {
               subheading={[ed.field_of_study, ed.gpa ? `GPA ${ed.gpa}` : ""].filter(Boolean).join(" · ") || undefined}
               date={ed.date}
               accent={accent}
+              subheadingBelow={true}
             />
           ))}
         </MinimalSection>
@@ -545,6 +553,7 @@ function Sidebar({ content, accent }: TemplateProps) {
                 subheading={[ed.field_of_study, ed.gpa ? `GPA ${ed.gpa}` : ""].filter(Boolean).join(" · ") || undefined}
                 date={ed.date}
                 accent={accent}
+                subheadingBelow={true}
               />
             ))}
           </ModernSection>

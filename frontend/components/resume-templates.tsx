@@ -148,16 +148,36 @@ function ClassicSection({
 }
 
 function Skills({ skills }: { skills: SkillInfo[] }) {
+  const hasCategories = skills.some(s => s.category?.trim());
+
+  if (!hasCategories) {
+    return (
+      <div className="flex flex-wrap gap-1.5">
+        {skills.map((s, i) => (
+          <span
+            key={i}
+            className="rounded bg-zinc-100 px-2 py-0.5 text-xs text-zinc-800"
+          >
+            {s.skill_name || "—"}
+          </span>
+        ))}
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-wrap gap-1.5">
-      {skills.map((s, i) => (
-        <span
-          key={i}
-          className="rounded bg-zinc-100 px-2 py-0.5 text-xs"
-        >
-          {s.skill_name || "—"}
-        </span>
-      ))}
+    <div className="flex flex-col gap-1.5">
+      {skills.map((s, i) => {
+        if (!s.skill_name?.trim()) return null;
+        return (
+          <div key={i} className="text-sm">
+            {s.category?.trim() ? (
+              <span className="font-semibold">{s.category.trim()}: </span>
+            ) : null}
+            <span className="opacity-80">{s.skill_name}</span>
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -504,10 +524,20 @@ function Sidebar({ content, accent }: TemplateProps) {
             <h2 className="mb-2 text-xs font-semibold uppercase tracking-wider text-white/70">
               Skills
             </h2>
-            <ul className="flex flex-col gap-1 text-sm text-white/90">
-              {skill.map((s, i) => (
-                <li key={i}>{s.skill_name || "—"}</li>
-              ))}
+            <ul className="flex flex-col gap-2.5 text-sm text-white/90">
+              {skill.map((s, i) => {
+                if (!s.skill_name?.trim()) return null;
+                return (
+                  <li key={i} className="leading-tight">
+                    {s.category?.trim() ? (
+                      <span className="block text-[10px] font-bold uppercase tracking-wider text-white/60 mb-0.5">
+                        {s.category.trim()}
+                      </span>
+                    ) : null}
+                    <span className="opacity-90">{s.skill_name}</span>
+                  </li>
+                );
+              })}
             </ul>
           </div>
         )}

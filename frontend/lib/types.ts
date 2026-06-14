@@ -44,6 +44,7 @@ export interface ProjectInfo {
 }
 
 export interface SkillInfo {
+  category?: string;
   skill_name: string;
 }
 

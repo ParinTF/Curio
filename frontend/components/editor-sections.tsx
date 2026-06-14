@@ -527,28 +527,26 @@ export function SkillsEditor({
   return (
     <SectionCard
       title="Skills"
-      addLabel="Add skill"
-      onAdd={() => onChange([...value, { skill_name: "" }])}
+      addLabel="Add skill group"
+      onAdd={() => onChange([...value, { category: "", skill_name: "" }])}
     >
       {value.length === 0 && <EmptyHint text="No skills added yet." />}
-      <div className="flex flex-col gap-2">
-        {value.map((item, i) => (
-          <div key={i} className="flex items-end gap-2">
-            <TextInput
-              label={`Skill #${i + 1}`}
-              value={item.skill_name}
-              onChange={(v) => onChange(updateAt(value, i, { skill_name: v }))}
-              placeholder="TypeScript"
-            />
-            <button
-              onClick={() => onChange(removeAt(value, i))}
-              className="mb-0.5 shrink-0 rounded-md border border-zinc-300 px-2.5 py-2 text-xs font-medium text-red-600 hover:bg-zinc-50"
-            >
-              Remove
-            </button>
-          </div>
-        ))}
-      </div>
+      {value.map((item, i) => (
+        <ItemCard key={i} index={i} onRemove={() => onChange(removeAt(value, i))}>
+          <TextInput
+            label="Category (optional)"
+            placeholder="e.g. Languages, Frameworks, Tools"
+            value={item.category ?? ""}
+            onChange={(v) => onChange(updateAt(value, i, { category: v }))}
+          />
+          <TextInput
+            label="Skills"
+            placeholder="e.g. JavaScript, Go, Python"
+            value={item.skill_name}
+            onChange={(v) => onChange(updateAt(value, i, { skill_name: v }))}
+          />
+        </ItemCard>
+      ))}
     </SectionCard>
   );
 }

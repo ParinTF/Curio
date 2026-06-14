@@ -79,6 +79,11 @@ export function EditorClient({ id }: { id: string }) {
           field_of_study: e.field_of_study ?? "",
           gpa: e.gpa ?? "",
         }));
+        merged.skill = (merged.skill ?? []).map((s) => ({
+          ...s,
+          category: s.category ?? "",
+          skill_name: s.skill_name ?? "",
+        }));
         setTitle(resume.title);
         setTemplate(resume.template);
         setContent(merged);

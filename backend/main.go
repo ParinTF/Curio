@@ -54,6 +54,7 @@ type projectInfo struct {
 }
 
 type skillInfo struct {
+	Category  string `json:"category"`
 	SkillName string `json:"skill_name"`
 }
 

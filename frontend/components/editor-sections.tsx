@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef, useState } from "react";
 import type {
   EducationInfo,
   ProjectInfo,
@@ -59,6 +60,57 @@ export function TextArea({
         rows={3}
         className={`${inputCls} resize-y font-normal text-zinc-900`}
       />
+    </label>
+  );
+}
+
+/**
+ * GPA input — allows only numbers with up to 2 decimal places, capped at 4.00.
+ * Invalid characters are silently rejected; an error hint appears if the value
+ * exceeds 4.00.
+ */
+function GpaInput({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  const handleChange = (raw: string) => {
+    // Allow empty (clearing the field)
+    if (raw === "") {
+      onChange("");
+      return;
+    }
+
+    // Only allow digits and a single decimal point, up to 2 decimal places
+    // Valid patterns: "4", "3.", "3.8", "3.80"
+    if (!/^\d{0,2}\.?\d{0,2}$/.test(raw)) return;
+
+    // Block values above 4.00
+    const num = parseFloat(raw);
+    if (!isNaN(num) && num > 4) return;
+
+    onChange(raw);
+  };
+
+  const num = parseFloat(value);
+  const isOver = !isNaN(num) && num > 4;
+
+  return (
+    <label className="flex flex-col gap-1 text-xs font-medium text-zinc-600">
+      GPA <span className="font-normal text-zinc-400">(max 4.00)</span>
+      <input
+        type="text"
+        inputMode="decimal"
+        value={value}
+        placeholder="3.80"
+        onChange={(e) => handleChange(e.target.value)}
+        className={`${inputCls} ${isOver ? "border-red-400 focus:border-red-500 focus:ring-red-500" : ""}`}
+      />
+      {isOver && (
+        <span className="text-[11px] text-red-500">GPA ต้องไม่เกิน 4.00</span>
+      )}
     </label>
   );
 }
@@ -229,6 +281,26 @@ function removeAt<T>(list: T[], index: number): T[] {
 /* Section editors                                                         */
 /* ----------------------------------------------------------------------- */
 
+export function ProfileEditor({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  return (
+    <section className="rounded-lg border border-zinc-200 bg-white p-5">
+      <h2 className="mb-4 text-sm font-semibold text-zinc-900">Profile</h2>
+      <TextArea
+        label="About you"
+        value={value}
+        onChange={onChange}
+        placeholder="A short intro about yourself, your background, and what you're looking for…"
+      />
+    </section>
+  );
+}
+
 export function ExperienceEditor({
   value,
   onChange,
@@ -322,6 +394,88 @@ export function ProjectEditor({
   );
 }
 
+interface UniversityResult {
+  name: string;
+  country: string;
+}
+
+function SchoolAutocomplete({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  const [results, setResults] = useState<UniversityResult[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const search = (q: string) => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    if (q.length < 2) { setResults([]); setOpen(false); return; }
+    timerRef.current = setTimeout(async () => {
+      setLoading(true);
+      try {
+        const res = await fetch(
+          `/api/universities?name=${encodeURIComponent(q)}`
+        );
+        const data: UniversityResult[] = await res.json();
+        const top = data.slice(0, 8);
+        setResults(top);
+        setOpen(top.length > 0);
+      } catch {
+        setResults([]);
+      } finally {
+        setLoading(false);
+      }
+    }, 350);
+  };
+
+  const handleChange = (v: string) => { onChange(v); search(v); };
+
+  const handleSelect = (name: string) => {
+    onChange(name);
+    setResults([]);
+    setOpen(false);
+  };
+
+  return (
+    <div className="relative flex flex-col gap-1 text-xs font-medium text-zinc-600">
+      School
+      <div className="relative">
+        <input
+          value={value}
+          onChange={(e) => handleChange(e.target.value)}
+          onBlur={() => setTimeout(() => setOpen(false), 150)}
+          onFocus={() => results.length > 0 && setOpen(true)}
+          placeholder="University of …"
+          className={inputCls}
+        />
+        {loading && (
+          <span className="absolute right-2.5 top-1/2 -translate-y-1/2">
+            <span className="block h-3.5 w-3.5 animate-spin rounded-full border-2 border-zinc-300 border-t-zinc-700" />
+          </span>
+        )}
+      </div>
+      {open && (
+        <ul className="absolute top-full z-20 mt-1 max-h-52 w-full overflow-auto rounded-md border border-zinc-200 bg-white shadow-lg">
+          {results.map((u, i) => (
+            <li
+              key={i}
+              onMouseDown={() => handleSelect(u.name)}
+              className="flex cursor-pointer flex-col px-3 py-2 hover:bg-zinc-50"
+            >
+              <span className="text-sm text-zinc-900">{u.name}</span>
+              <span className="text-[11px] text-zinc-400">{u.country}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 export function EducationEditor({
   value,
   onChange,
@@ -338,11 +492,9 @@ export function EducationEditor({
       {value.length === 0 && <EmptyHint text="No education added yet." />}
       {value.map((item, i) => (
         <ItemCard key={i} index={i} onRemove={() => onChange(removeAt(value, i))}>
-          <TextInput
-            label="School"
+          <SchoolAutocomplete
             value={item.school_name}
             onChange={(v) => onChange(updateAt(value, i, { school_name: v }))}
-            placeholder="University of …"
           />
           <TextInput
             label="Field of Study"
@@ -355,11 +507,9 @@ export function EducationEditor({
             value={item.date}
             onChange={(v) => onChange(updateAt(value, i, { date: v }))}
           />
-          <TextInput
-            label="GPA"
+          <GpaInput
             value={item.gpa}
             onChange={(v) => onChange(updateAt(value, i, { gpa: v }))}
-            placeholder="3.80 / 4.00"
           />
         </ItemCard>
       ))}

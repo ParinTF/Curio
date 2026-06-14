@@ -5,9 +5,22 @@
 
 export interface PersonInfo {
   name: string;
-  contact: string;
+  email: string;
+  phone: string;
+  location: string;
+  github: string;
   /** Data URL or image URL. Rendered by photo-supporting templates. */
   photo: string;
+}
+
+/**
+ * Build a display string from the non-empty contact fields, separated by " · ".
+ * Used by resume templates to render a compact one-line contact row.
+ */
+export function formatContact(p: PersonInfo): string {
+  return [p.email, p.phone, p.location, p.github]
+    .filter(Boolean)
+    .join(" · ");
 }
 
 export interface EducationInfo {
@@ -38,12 +51,14 @@ export type FontFamily = "sans" | "serif" | "mono";
 
 export interface StyleInfo {
   accent_color: string;
+  font_color: string;
   font_family: FontFamily;
 }
 
 /** The JSONB blob stored in the `resumes.content` column. */
 export interface ResumeContent {
   personInfo: PersonInfo;
+  profile: string;
   education: EducationInfo[];
   experience: WorkInfo[];
   project: ProjectInfo[];
@@ -80,16 +95,18 @@ export interface CreateResumeRequest {
 }
 
 export const DEFAULT_ACCENT = "#2563eb";
+export const DEFAULT_FONT_COLOR = "#18181b";
 export const DEFAULT_FONT: FontFamily = "sans";
 
 export function defaultStyle(): StyleInfo {
-  return { accent_color: DEFAULT_ACCENT, font_family: DEFAULT_FONT };
+  return { accent_color: DEFAULT_ACCENT, font_color: DEFAULT_FONT_COLOR, font_family: DEFAULT_FONT };
 }
 
 /** A blank content envelope, useful when creating a new resume. */
 export function emptyContent(): ResumeContent {
   return {
-    personInfo: { name: "", contact: "", photo: "" },
+    personInfo: { name: "", email: "", phone: "", location: "", github: "", photo: "" },
+    profile: "",
     education: [],
     experience: [],
     project: [],

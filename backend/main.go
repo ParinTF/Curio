@@ -25,9 +25,12 @@ type resume interface {
 }
 
 type personInfo struct {
-	Name    string `json:"name"`
-	Contact string `json:"contact"`
-	Photo   string `json:"photo"`
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	Phone    string `json:"phone"`
+	Location string `json:"location"`
+	Github   string `json:"github"`
+	Photo    string `json:"photo"`
 }
 
 type educationInfo struct {
@@ -56,6 +59,7 @@ type skillInfo struct {
 
 type styleInfo struct {
 	AccentColor string `json:"accent_color"`
+	FontColor   string `json:"font_color"`
 	FontFamily  string `json:"font_family"`
 }
 

@@ -14,6 +14,7 @@ import { ResumePaper } from "@/components/resume-paper";
 import {
   EducationEditor,
   ExperienceEditor,
+  ProfileEditor,
   ProjectEditor,
   SkillsEditor,
   TextInput,
@@ -26,6 +27,15 @@ const ACCENT_PRESETS = [
   "#7c3aed", // violet
   "#ea580c", // orange
   "#18181b", // near-black
+];
+
+const FONT_COLOR_PRESETS = [
+  "#18181b", // zinc-900 (default)
+  "#374151", // gray-700
+  "#1e3a5f", // dark navy
+  "#3f3f46", // zinc-700
+  "#7f1d1d", // dark red
+  "#1e40af", // dark blue
 ];
 
 const FONTS: { id: FontFamily; label: string }[] = [
@@ -150,7 +160,7 @@ export function EditorClient({ id }: { id: string }) {
   // Helpers to patch nested state immutably.
   const patchContent = (patch: Partial<ResumeContent>) =>
     setContent((c) => ({ ...c, ...patch }));
-  const setPerson = (field: "name" | "contact" | "photo", v: string) =>
+  const setPerson = (field: keyof ResumeContent["personInfo"], v: string) =>
     setContent((c) => ({ ...c, personInfo: { ...c.personInfo, [field]: v } }));
   const setStyle = (patch: Partial<ResumeContent["style"]>) =>
     setContent((c) => ({ ...c, style: { ...c.style, ...patch } }));
@@ -236,12 +246,34 @@ export function EditorClient({ id }: { id: string }) {
                 onChange={(v) => setPerson("name", v)}
                 placeholder="Jane Doe"
               />
-              <TextInput
-                label="Contact"
-                value={content.personInfo.contact}
-                onChange={(v) => setPerson("contact", v)}
-                placeholder="jane@email.com · +66 · Bangkok"
-              />
+              <div className="grid grid-cols-2 gap-3">
+                <TextInput
+                  label="Email"
+                  value={content.personInfo.email}
+                  onChange={(v) => setPerson("email", v)}
+                  placeholder="jane@email.com"
+                />
+                <TextInput
+                  label="Phone"
+                  value={content.personInfo.phone}
+                  onChange={(v) => setPerson("phone", v)}
+                  placeholder="+66 812 345 678"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <TextInput
+                  label="Location"
+                  value={content.personInfo.location}
+                  onChange={(v) => setPerson("location", v)}
+                  placeholder="Bangkok, Thailand"
+                />
+                <TextInput
+                  label="GitHub"
+                  value={content.personInfo.github}
+                  onChange={(v) => setPerson("github", v)}
+                  placeholder="github.com/username"
+                />
+              </div>
 
               <div>
                 <p className="mb-1.5 text-xs font-medium text-zinc-600">
@@ -338,6 +370,32 @@ export function EditorClient({ id }: { id: string }) {
               </div>
 
               <div>
+                <p className="mb-1.5 text-xs font-medium text-zinc-600">Text color</p>
+                <div className="flex items-center gap-2">
+                  {FONT_COLOR_PRESETS.map((c) => (
+                    <button
+                      key={c}
+                      onClick={() => setStyle({ font_color: c })}
+                      aria-label={`Font color ${c}`}
+                      className={`h-7 w-7 rounded-full border-2 transition-transform hover:scale-110 ${
+                        content.style.font_color === c
+                          ? "border-zinc-900"
+                          : "border-transparent"
+                      }`}
+                      style={{ backgroundColor: c }}
+                    />
+                  ))}
+                  <input
+                    type="color"
+                    value={content.style.font_color}
+                    onChange={(e) => setStyle({ font_color: e.target.value })}
+                    className="h-7 w-9 cursor-pointer rounded border border-zinc-300 bg-white"
+                    aria-label="Custom text color"
+                  />
+                </div>
+              </div>
+
+              <div>
                 <p className="mb-1.5 text-xs font-medium text-zinc-600">Font</p>
                 <div className="flex gap-2">
                   {FONTS.map((f) => (
@@ -358,6 +416,10 @@ export function EditorClient({ id }: { id: string }) {
             </div>
           </section>
 
+          <ProfileEditor
+            value={content.profile}
+            onChange={(v) => patchContent({ profile: v })}
+          />
           <ExperienceEditor
             value={content.experience}
             onChange={(v) => patchContent({ experience: v })}

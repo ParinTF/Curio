@@ -70,6 +70,7 @@ export function EditorClient({ id }: { id: string }) {
         const merged: ResumeContent = {
           ...emptyContent(),
           ...resume.content,
+          personInfo: { ...emptyContent().personInfo, ...resume.content?.personInfo },
           style: { ...defaultStyle(), ...resume.content?.style },
         };
         // Older education items may predate the `gpa` / `field_of_study`
